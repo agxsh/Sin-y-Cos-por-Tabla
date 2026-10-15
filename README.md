@@ -3,3 +3,4 @@
 Antes que nada para poder correr el programa en VS-Code se necesitan las siguientes Extensiones: "LC3 Assembly" 
 
 agus es un fiera
+Nota: a agus no le gusta que haya boludeces :(
