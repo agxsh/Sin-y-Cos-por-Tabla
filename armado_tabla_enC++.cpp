@@ -13,7 +13,8 @@ int convertirAQ14(float valor) {
 
 
 int main(){
-    float resultado[91], Q1_14[91];
+    float resultado[91];
+    int Q1_14[91];
     resultado[0] = 0.000000000000000;
     resultado[1] = 0.017452406437284;
     resultado[2] = 0.034899496702501;
