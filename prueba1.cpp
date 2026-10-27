@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdint.h>
+#include <cmath>
 
 using namespace std;
 
@@ -41,24 +42,71 @@ float calcularCoseno(float angulo) {
 }
 
 int main() {
-    float pi = 3.14159265f;
-    float angulos[3] = {0.0f, pi / 4.0f, pi / 2.0f};
+    const float PI = 3.14159265f;
+    float errorMaxSeno = 0.0f;
+    float errorMaxCoseno = 0.0f;
+    int gradoMaxSeno = 0;
+    int gradoMaxCoseno = 0;
 
-    for (int i = 0; i < 3; i++) {
-        float angulo = angulos[i];
-        float seno = calcularSeno(angulo);
-        float coseno = calcularCoseno(angulo);
+    int errorMaxQ14Seno = 0;
+    int errorMaxQ14Coseno = 0;
 
-        cout << "Angulo: " << angulo << '\n';
+    for (int grado = 0; grado <= 90; grado++) {
+        float angulo = grado * PI / 180.0f;
 
-        cout << "  Seno: " << seno
-             << " | Q1.14: " << convertirAQ14(seno) << '\n';
+        float senoCalculado = calcularSeno(angulo);
+        float cosenoCalculado = calcularCoseno(angulo);
 
-        cout << "  Coseno: " << coseno
-             << " | Q1.14: " << convertirAQ14(coseno) << '\n';
+        // Referencias utilizadas exclusivamente para validar.
+        float senoReferencia = sin(angulo);
+        float cosenoReferencia = cos(angulo);
 
-        cout << '\n';
+        float errorSeno = fabs(senoCalculado - senoReferencia);
+        float errorCoseno = fabs(cosenoCalculado - cosenoReferencia);
+
+        if (errorSeno > errorMaxSeno) {
+            errorMaxSeno = errorSeno;
+            gradoMaxSeno = grado;
+        }
+
+        if (errorCoseno > errorMaxCoseno) {
+            errorMaxCoseno = errorCoseno;
+            gradoMaxCoseno = grado;
+        }
+
+        int diferenciaSeno =
+            convertirAQ14(senoCalculado) -
+            convertirAQ14(senoReferencia);
+
+        int diferenciaCoseno =
+            convertirAQ14(cosenoCalculado) -
+            convertirAQ14(cosenoReferencia);
+
+        if (diferenciaSeno < 0)
+            diferenciaSeno = -diferenciaSeno;
+
+        if (diferenciaCoseno < 0)
+            diferenciaCoseno = -diferenciaCoseno;
+
+        if (diferenciaSeno > errorMaxQ14Seno)
+            errorMaxQ14Seno = diferenciaSeno;
+
+        if (diferenciaCoseno > errorMaxQ14Coseno)
+            errorMaxQ14Coseno = diferenciaCoseno;
     }
+
+    cout << "ERROR MAXIMO EN PUNTO FLOTANTE\n";
+
+    cout << "Seno: " << errorMaxSeno
+         << " en " << gradoMaxSeno << " grados\n";
+
+    cout << "Coseno: " << errorMaxCoseno
+         << " en " << gradoMaxCoseno << " grados\n";
+
+    cout << "\nDIFERENCIA MAXIMA EN Q1.14\n";
+
+    cout << "Seno: " << errorMaxQ14Seno << " unidades\n";
+    cout << "Coseno: " << errorMaxQ14Coseno << " unidades\n";
 
     return 0;
 }
