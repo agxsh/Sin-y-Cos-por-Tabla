@@ -12,14 +12,14 @@ using namespace std; // Para evitar redundancia de std::
 #define Total_valores 91 //LINK Total de valores en la tabla
 
 //NOTE - Info
-// ? Constantes que están representadas en formato fijo Q3.12 
-// ? y expresadas en radianes.
-// ! son aproximaciones porque estamos representando 
-// ! números reales con una cantidad finita de bits.
-const int16_t PI_sobre_2 = 6434; //NOTE  π/2 rad ≈ 90° en Q3.12
-const int16_t PI = 12868; //NOTE π rad ≈ 180° en Q3.12
-const int16_t TRESxPI_sobre_2 = 19302; //NOTE 3π/2 rad ≈ 270° en Q3.12
-const int16_t DOSxPI = 25736; //NOTE 2π rad ≈ 360° en Q3.12
+//  ? Constantes que están representadas en formato fijo Q3.12 
+//  ? y expresadas en radianes.
+//  ! son aproximaciones porque estamos representando 
+//  ! números reales con una cantidad finita de bits.
+const int16_t PI_sobre_2 = 6434;          //NOTE  π/2 rad ≈ 90° en Q3.12
+const int16_t PI = 12868;                //NOTE π rad ≈ 180° en Q3.12
+const int16_t TRESxPI_sobre_2 = 19302;  //NOTE 3π/2 rad ≈ 270° en Q3.12
+const int16_t DOSxPI = 25736;          //NOTE 2π rad ≈ 360° en Q3.12
 //!SECTION
 
 //LINK - Convertir a Q1.14
@@ -27,7 +27,7 @@ int convertirQ1_14(float valor) {
     float escalado = valor * 16384.0f;
 
     // Aplicar redondeo:
-    if (escalado >= 0.0f) { // en caso de que se trate de un positivo
+    if (escalado >= 0.0f) {             // en caso de que se trate de un positivo
         return (int)(escalado + 0.5f); // redondea 0.5
     }
     
@@ -136,6 +136,7 @@ void iniciar_tabla(float tabla[]){
 void copiar_y_convertirQ1_14(float copia[], float tabla_principal[]){
     // Toma los valores originales en decimal de la tabla
     // y los convierte a enteros
+    
     // ? se tendra una segunda tabla que almacene estos valores
     // asi no se modifican los valores originales a futuras pruebas de ser 
     // necesarias
@@ -183,10 +184,10 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
     // 1. Convertir la entrada decimal a Q3.12.
     Q3_12 = convertirQ3_12(angulo);
 
-    cout << "\n--- CONVERSION A Q3.12 ---" << endl;
-    cout << "Angulo ingresado: " << angulo << endl;
-    cout << "Entero Q3.12: " << Q3_12 << endl;
-    cout << "Angulo representado: "<< (float)Q3_12 / 4096.0f<<" radianes" << endl;
+    // cout << "\n--- CONVERSION A Q3.12 ---" << endl;
+    // cout << "Angulo ingresado: " << angulo << endl;
+    // cout << "Entero Q3.12: " << Q3_12 << endl;
+    // cout << "Angulo representado: "<< (float)Q3_12 / 4096.0f<<" radianes" << endl;
 
     // 2. Identificar el cuadrante y calcular la referencia.
     if (Q3_12 == 0 || Q3_12 == DOSxPI) {
@@ -195,7 +196,7 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
         signo_seno = 0;
         signo_cos = 1;
 
-        cout << "\nCaso especial: 0 o 2xPI" << endl;
+        // cout << "\nCaso especial: 0 o 2xPI" << endl;
     } else {
         diferencia = Q3_12 - PI_sobre_2;
 
@@ -210,7 +211,7 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
             signo_seno = 1;
             signo_cos = 0;
 
-            cout << "\nCaso especial: pi/2" << endl;
+            // cout << "\nCaso especial: pi/2" << endl;
         } else {
             diferencia = Q3_12 - PI;
 
@@ -225,7 +226,7 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
                 signo_seno = 0;
                 signo_cos = -1;
 
-                cout << "\nCaso especial: pi" << endl;
+                // cout << "\nCaso especial: pi" << endl;
             } else {
                 diferencia = Q3_12 - TRESxPI_sobre_2;
 
@@ -240,7 +241,7 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
                     signo_seno = -1;
                     signo_cos = 0;
 
-                    cout << "\nCaso especial: 3*pi/2" << endl;
+                    // cout << "\nCaso especial: 3*pi/2" << endl;
                 } else {
                     cuadrante = 4;
                     referencia = DOSxPI - Q3_12;
@@ -252,131 +253,16 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
     }
 
     // 3. Mostrar los resultados.
-    cout << "\n--- RESULTADOS ---" << endl;
-    cout << "Cuadrante: " << cuadrante << endl;
-    cout << "Referencia Q3.12: " << referencia << endl;
-    cout << "Referencia en radianes: "<< (float)referencia / 4096.0f << endl;
-    cout << "Signo del seno: " << signo_seno << endl;
-    cout << "Signo del coseno: " << signo_cos << endl;
+    // cout << "\n--- RESULTADOS ---" << endl;
+    // cout << "Cuadrante: " << cuadrante << endl;
+    // cout << "Referencia Q3.12: " << referencia << endl;
+    // cout << "Referencia en radianes: "<< (float)referencia / 4096.0f << endl;
+    // cout << "Signo del seno: " << signo_seno << endl;
+    // cout << "Signo del coseno: " << signo_cos << endl;
 
 
     // ? Sobre el signo:
     // 1: el resultado es positivo.
     // -1: el resultado es negativo.
     // 0: el resultado es exactamente cero en ese caso especial.
-}
-
-// LINK - Comparar metodos de calculo del indice
-inline void probarMetodosIndice() {
-
-    const int32_t PI_MEDIO_Q312 = 6434;
-    const int32_t ESCALA_Q312 = 4096;
-    const double PI = 3.14159265358979323846;
-
-    int totalPruebas = 0;
-    int diferencias = 0;
-
-    int maxDiferenciaIndices = 0;
-    int referenciaDiferente = 0;
-    int indiceAEnDiferencia = 0;
-    int indiceBEnDiferencia = 0;
-
-    double maxErrorA = 0.0;
-    double maxErrorB = 0.0;
-
-    // Recorrer todas las referencias posibles del primer cuadrante.
-    for (int32_t referencia = 0;
-         referencia <= PI_MEDIO_Q312;
-         referencia++) {
-
-        // -----------------------------------------
-        // OPCION A: convertir a grados y redondear
-        // -----------------------------------------
-        double grados = ((double)referencia / ESCALA_Q312)
-                        * (180.0 / PI);
-
-        int indiceA = (int)round(grados);
-
-        // -----------------------------------------
-        // OPCION B: calcular el indice directamente
-        // con aritmetica entera
-        // -----------------------------------------
-        int32_t numerador = referencia * 90 + PI_MEDIO_Q312 / 2;
-
-        int indiceB = numerador / PI_MEDIO_Q312;
-
-        // -----------------------------------------
-        // INDICE MATEMATICO IDEAL (sin redondear)
-        // -----------------------------------------
-        double indiceIdeal =
-            ((double)referencia * 90.0) / PI_MEDIO_Q312;
-
-        double errorA = fabs(indiceA - indiceIdeal);
-        double errorB = fabs(indiceB - indiceIdeal);
-
-        if (errorA > maxErrorA) {
-            maxErrorA = errorA;
-        }
-
-        if (errorB > maxErrorB) {
-            maxErrorB = errorB;
-        }
-
-        // -----------------------------------------
-        // COMPARACION ENTRE AMBOS METODOS
-        // -----------------------------------------
-        int diferenciaActual = abs(indiceA - indiceB);
-
-        if (diferenciaActual > 0) {
-            diferencias++;
-
-            if (diferenciaActual > maxDiferenciaIndices) {
-                maxDiferenciaIndices = diferenciaActual;
-                referenciaDiferente = referencia;
-                indiceAEnDiferencia = indiceA;
-                indiceBEnDiferencia = indiceB;
-            }
-        }
-
-        totalPruebas++;
-    }
-
-    // -----------------------------------------
-    // MOSTRAR RESULTADOS
-    // -----------------------------------------
-    cout << "\n===== PRUEBA COMPARATIVA DE INDICES =====\n";
-
-    cout << "\nTotal de referencias probadas: "
-         << totalPruebas << "\n";
-
-    cout << "\n--- Comparacion A vs. B ---\n";
-
-    cout << "Referencias con indices diferentes: "
-         << diferencias << "\n";
-
-    cout << "Referencias con indices iguales: "
-         << totalPruebas - diferencias << "\n";
-
-    cout << "Maxima diferencia entre indices: "
-         << maxDiferenciaIndices << "\n";
-
-    if (diferencias > 0) {
-        cout << "Referencia donde se registro la maxima diferencia: "
-             << referenciaDiferente << "\n";
-
-        cout << "Indice A: " << indiceAEnDiferencia << "\n";
-        cout << "Indice B: " << indiceBEnDiferencia << "\n";
-    }
-
-    cout << fixed << setprecision(6);
-
-    cout << "\n--- Error respecto al indice ideal ---\n";
-
-    cout << "Maximo error de A (indices): "
-         << maxErrorA << "\n";
-
-    cout << "Maximo error de B (indices): "
-         << maxErrorB << "\n";
-
-    cout << "\n===== FIN DE LA PRUEBA =====\n";
 }
