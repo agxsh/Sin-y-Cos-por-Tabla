@@ -8,10 +8,14 @@ using namespace std; // Para evitar redundancia de std::
 //LINK - Valores necesarios
 #define Total_valores 91 // ! Valores totales a albergar en la tabla
 
-const int16_t PI_sobre_2 = 6434; // 
-const int16_t PI = 12868; // 
-const int16_t TRESxPI_sobre_2 = 19302; // 
-const int16_t DOSxPI = 25736; // 
+// ? Constantes que están representadas en formato fijo Q3.12 
+// ? y expresadas en radianes.
+// !son aproximaciones porque estamos representando 
+// ! números reales con una cantidad finita de bits.
+const int16_t PI_sobre_2 = 6434; //NOTE  π/2 rad ≈ 90° en Q3.12
+const int16_t PI = 12868; //NOTE π rad ≈ 180° en Q3.12
+const int16_t TRESxPI_sobre_2 = 19302; //NOTE 3π/2 rad ≈ 270° en Q3.12
+const int16_t DOSxPI = 25736; //NOTE 2π rad ≈ 360° en Q3.12
 
 //LINK - Convertir a Q1.14
 int convertirQ1_14(float valor) {
