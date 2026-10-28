@@ -31,8 +31,6 @@ void determinar_cuadrante(float angulo, int16_t &referencia,
     cout << "\n--- CONVERSION A Q3.12 ---" << endl;
     cout << "Angulo ingresado: " << angulo << " radianes" << endl;
     cout << "Entero Q3.12: " << Q3_12 << endl;
-    cout << "Angulo representado: "
-         << (float)Q3_12 / 4096.0f << " radianes" << endl;
 
     // DEMOSTRACION: equivalencia aproximada en grados.
     // Esta conversion solo se muestra para facilitar la explicacion;
