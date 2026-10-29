@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstdint>
-#include "Tabla.h"
+#include "../Tabla_v1.h"
 
 using namespace std;
 

@@ -22,8 +22,7 @@ int16_t convertirQ3_12(float valor) {
 
 // Identifica el cuadrante, calcula el angulo de referencia
 // y determina los signos del seno y del coseno.
-void determinar_cuadrante(float angulo, int16_t &referencia,
-                          int &cuadrante, int &signo_seno, int &signo_cos) {
+void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int &signo_seno, int &signo_cos) {
     int16_t diferencia;
     int16_t Q3_12 = convertirQ3_12(angulo);
 
@@ -36,8 +35,7 @@ void determinar_cuadrante(float angulo, int16_t &referencia,
     // Esta conversion solo se muestra para facilitar la explicacion;
     // la logica del cuadrante trabaja con valores Q3.12 en radianes.
     float grados = ((float)Q3_12 / 4096.0f) * (180.0f / 3.14159265f);
-    cout << "Equivalente aproximado en grados (demostracion): "
-         << grados << " grados" << endl;
+    cout << "Equivalente aproximado en grados (demostracion): " << grados << " grados" << endl;
 
     // Identificar el cuadrante y calcular el angulo de referencia.
     if (Q3_12 == 0 || Q3_12 == DOSxPI) {
@@ -101,8 +99,7 @@ void determinar_cuadrante(float angulo, int16_t &referencia,
     cout << "\n--- RESULTADOS ---" << endl;
     cout << "Cuadrante: " << cuadrante << endl;
     cout << "Referencia Q3.12: " << referencia << endl;
-    cout << "Referencia en radianes: "
-         << (float)referencia / 4096.0f << endl;
+    cout << "Referencia en radianes: "<< (float)referencia / 4096.0f << endl;
     cout << "Signo del seno: " << signo_seno << endl;
     cout << "Signo del coseno: " << signo_cos << endl;
 }
@@ -117,8 +114,7 @@ int main() {
     cout << "Ingrese el angulo en radianes (entre 0 y aproximadamente 6.2832): ";
     cin >> anguloDecimal;
 
-    determinar_cuadrante(anguloDecimal, referencia, cuadrante,
-                         signo_seno, signo_cos);
+    determinar_cuadrante(anguloDecimal, referencia, cuadrante, signo_seno, signo_cos);
 
     return 0;
 }
