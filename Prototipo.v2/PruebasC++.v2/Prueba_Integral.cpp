@@ -9,7 +9,7 @@ int main() {
 
     // Inicializar y convertir las tablas
     float tabla_original[91];
-    float tabla_q1_14[91];
+    int tabla_q1_14[91];
 
     iniciar_tabla(tabla_original);
     copiar_y_convertirQ1_14(tabla_q1_14, tabla_original);
@@ -50,9 +50,7 @@ int main() {
     int16_t coseno_especial_esperado;
 
     // Recorrer todos los valores representables de Q3.12
-    for (int valor_q3_12 = 0;
-         valor_q3_12 <= DOSxPI;
-         valor_q3_12++) {
+    for (int valor_q3_12 = 0; valor_q3_12 <= DOSxPI; valor_q3_12++) {
 
         // Convertir la entrada Q3.12 a radianes
         angulo = (float)valor_q3_12 / 4096.0f;

@@ -8,7 +8,8 @@
 int main() {
 
     // Tabla de prueba: valores de seno de 0 a 90 grados en Q1.14
-    float tabla_original[91], tabla_q1_14[91];
+    float tabla_original[91];
+    int tabla_q1_14[91];
 
     double radianes;
     double valor_seno;
