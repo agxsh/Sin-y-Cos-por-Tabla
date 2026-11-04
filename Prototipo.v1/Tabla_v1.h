@@ -1,3 +1,6 @@
+#ifndef TABLA_V1_H
+#define TABLA_V1_H
+
 //LINK - Librerias
 #include <iostream>
 #include <stdint.h>
@@ -266,3 +269,5 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
     // -1: el resultado es negativo.
     // 0: el resultado es exactamente cero en ese caso especial.
 }
+
+#endif /* TABLA_V1_H */

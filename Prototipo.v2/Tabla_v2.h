@@ -1,7 +1,7 @@
-//LINK - Librerias
+#ifndef TABLA_V2_H
+#define TABLA_V2_H
 
-#ifndef TABLA_H
-#define TABLA_H
+//LINK - Librerias
 #include <iostream>
 #include <stdint.h>
 #include <cmath>
@@ -271,4 +271,16 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
 }
 
 
-#endif /* TABLA_H */
+//LINK - Convertir referencia Q3.12 a grados decimales
+float convertir_referencia_a_grados(int16_t referencia_q3_12) {
+
+    double radianes;
+    double grados;
+
+    radianes = (double)referencia_q3_12 / 4096.0;
+    grados = radianes * 180.0 / 3.14159265358979323846;
+
+    return (float)grados;
+}
+
+#endif /* TABLA_V2_H */
