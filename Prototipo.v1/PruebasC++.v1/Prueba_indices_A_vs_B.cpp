@@ -4,7 +4,6 @@
 #include <cstdint>
 #include "../Tabla_v1.h"
 
-using namespace std;
 
 // LINK - Comparar metodos de calculo del indice
 inline void probarMetodosIndice() {

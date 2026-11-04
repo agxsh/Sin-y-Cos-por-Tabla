@@ -5,8 +5,6 @@
 
 #include "../Tabla_v2.h"
 
-using namespace std;
-
 int main() {
 
     double error_maximo = 0;

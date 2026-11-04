@@ -19,10 +19,12 @@ using namespace std; // Para evitar redundancia de std::
 //  ? y expresadas en radianes.
 //  ! son aproximaciones porque estamos representando 
 //  ! números reales con una cantidad finita de bits.
-const int16_t PI_sobre_2 = 6434;          //NOTE  π/2 rad ≈ 90° en Q3.12
-const int16_t PI = 12868;                //NOTE π rad ≈ 180° en Q3.12
-const int16_t TRESxPI_sobre_2 = 19302;  //NOTE 3π/2 rad ≈ 270° en Q3.12
-const int16_t DOSxPI = 25736;          //NOTE 2π rad ≈ 360° en Q3.12
+const int16_t PI_sobre_2      = 6434;        //NOTE  π/2 rad ≈ 90° en Q3.12
+const int16_t PI              = 12868;      //NOTE  π rad ≈ 180° en Q3.12
+const int16_t TRESxPI_sobre_2 = 19302;     //NOTE  3π/2 rad ≈ 270° en Q3.12
+const int16_t DOSxPI          = 25736;    //NOTE  2π rad ≈ 360° en Q3.12
+const int16_t MENOS_1         = -16384;  //NOTE -1 Escalado
+const int16_t UNO             = 16384;  //NOTE  1 Escalado
 //!SECTION
 
 //LINK - Convertir a Q1.14
@@ -281,6 +283,90 @@ float convertir_referencia_a_grados(int16_t referencia_q3_12) {
     grados = radianes * 180.0 / 3.14159265358979323846;
 
     return (float)grados;
+}
+
+
+//LINK - Interpolar un valor de seno en formato Q1.14
+int16_t interpolarQ1_14(float tabla[], float grados) {
+
+    int indice_inferior;
+    int indice_superior;
+
+    float fraccion;
+    float valor_inferior;
+    float valor_superior;
+    float resultado;
+
+    // Controlar los limites de la tabla
+    if (grados <= 0) {
+        return (int16_t)tabla[0];
+    }
+
+    if (grados >= 90) {
+        return (int16_t)tabla[90];
+    }
+
+    // Obtener los indices vecinos
+    indice_inferior = (int)grados;
+    indice_superior = indice_inferior + 1;
+
+    // Obtener la parte decimal del angulo
+    fraccion = grados - indice_inferior;
+
+    // Obtener los valores vecinos de la tabla
+    valor_inferior = tabla[indice_inferior];
+    valor_superior = tabla[indice_superior];
+
+    // Calcular la interpolacion lineal
+    resultado = valor_inferior + fraccion * (valor_superior - valor_inferior);
+
+    // Redondear al entero mas cercano
+    return (int16_t)(resultado + 0.5);
+}
+
+//REVIEW - Calcular seno y coseno finales en Q1.14
+void calcular_seno_coseno_Q1_14(float tabla[], float angulo, int16_t &resultado_seno, int16_t &resultado_coseno){
+    int16_t referencia;
+    int cuadrante;
+    int signo_seno;
+    int signo_cos;
+
+    int16_t seno_referencia;
+    int16_t coseno_referencia;
+
+    float grados_referencia;
+    float grados_coseno;
+
+    // 1. Determinar cuadrante, referencia y signos
+    determinar_cuadrante(angulo,referencia,cuadrante,signo_seno,signo_cos);
+
+    // 2. Resolver los casos especiales
+    if (cuadrante == 0) {
+
+        resultado_seno = signo_seno * UNO;
+        resultado_coseno = signo_cos * UNO;
+
+    } 
+    
+    else {
+
+        // 3. Convertir la referencia a grados
+        grados_referencia = convertir_referencia_a_grados(referencia);
+
+        // 4. Interpolar el seno
+        seno_referencia = interpolarQ1_14(tabla,grados_referencia);
+
+        // 5. Obtener el coseno mediante cofuncion
+        grados_coseno = 90.0f - grados_referencia;
+
+        coseno_referencia = interpolarQ1_14(tabla,grados_coseno);
+
+        // 6. Aplicar los signos correspondientes
+        resultado_seno = seno_referencia * signo_seno;
+        resultado_coseno = coseno_referencia * signo_cos;
+
+        // ? Dilema para futuro: el -1 capaz deberia estar escalado... (pa pensar noma)
+    }
 }
 
 #endif /* TABLA_V2_H */
