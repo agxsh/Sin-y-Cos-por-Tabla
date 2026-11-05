@@ -1,5 +1,5 @@
-#ifndef TABLA_V1_H
-#define TABLA_V1_H
+#ifndef TABLA_H
+#define TABLA_H
 
 //LINK - Librerias
 #include <iostream>
@@ -19,17 +19,19 @@ using namespace std; // Para evitar redundancia de std::
 //  ? y expresadas en radianes.
 //  ! son aproximaciones porque estamos representando 
 //  ! números reales con una cantidad finita de bits.
-const int16_t PI_sobre_2 = 6434;          //NOTE  π/2 rad ≈ 90° en Q3.12
-const int16_t PI = 12868;                //NOTE π rad ≈ 180° en Q3.12
-const int16_t TRESxPI_sobre_2 = 19302;  //NOTE 3π/2 rad ≈ 270° en Q3.12
-const int16_t DOSxPI = 25736;          //NOTE 2π rad ≈ 360° en Q3.12
+const int16_t PI_sobre_2      = 6434;        //NOTE  π/2 rad ≈ 90° en Q3.12
+const int16_t PI              = 12868;      //NOTE  π rad ≈ 180° en Q3.12
+const int16_t TRESxPI_sobre_2 = 19302;     //NOTE  3π/2 rad ≈ 270° en Q3.12
+const int16_t DOSxPI          = 25736;    //NOTE  2π rad ≈ 360° en Q3.12
+const int16_t MENOS_1         = -16384;  //NOTE -1 Escalado
+const int16_t UNO             = 16384;  //NOTE  1 Escalado
 //!SECTION
 
 //LINK - Convertir a Q1.14
 int convertirQ1_14(float valor) {
     float escalado = valor * 16384.0f;
 
-    // Aplicar redondeo:
+    // ? Aplicar redondeo:
     if (escalado >= 0.0f) {             // en caso de que se trate de un positivo
         return (int)(escalado + 0.5f); // redondea 0.5
     }
@@ -39,9 +41,21 @@ int convertirQ1_14(float valor) {
     // caso contrario no
 }
 
+//LINK - Convertir a Q3.12
+int16_t convertirQ3_12(float valor) {
+    float escalado = valor * 4096.0f;
+
+    // ? Aplicar redondeo: 
+    if (escalado >= 0.0f) {
+        return (int16_t)(escalado + 0.5f);
+    }
+
+    return (int16_t)(escalado - 0.5f);    
+}
+
 //LINK - Inicializar tabla
 void iniciar_tabla(float tabla[]){
-    // Cada indice representa un seno en especifico
+    // ! Cada indice representa un seno en especifico
     tabla[0] = 0.000000000000000;
     tabla[1] = 0.017452406437284;
     tabla[2] = 0.034899496702501;
@@ -136,9 +150,9 @@ void iniciar_tabla(float tabla[]){
 }
 
 //LINK - Hacer copia y convertir Q1.14
-void copiar_y_convertirQ1_14(float copia[], float tabla_principal[]){
-    // Toma los valores originales en decimal de la tabla
-    // y los convierte a enteros
+void copiar_y_convertirQ1_14(int16_t copia[], float tabla_principal[]){
+    // ! Toma los valores originales en decimal de la tabla
+    // ! y los convierte a enteros escalados
     
     // ? se tendra una segunda tabla que almacene estos valores
     // asi no se modifican los valores originales a futuras pruebas de ser 
@@ -149,58 +163,43 @@ void copiar_y_convertirQ1_14(float copia[], float tabla_principal[]){
 }
 
 //LINK - Muestra de valores en formato obj
-void muestra_tabla_assembly(float tabla_copia[]){
+void muestra_tabla_assembly(int16_t tabla_copia[]){
     cout<<"TABLA_SENO"<<endl;
     for (int i=0; i<Total_valores; i++){
         cout<<"\t.FILL #"<<tabla_copia[i]<<" ; Resultado de seno("<<i<<")"<<endl;
     }
 
-    // Para copiar y pegar para cuando tengamos que armar el assembly
+    // ? Para copiar y pegar para cuando tengamos que armar el assembly
 }
 
 //LINK - Muestra de valores (normal)
-void muestra_tabla_C(float tabla_copia[]){
-    cout << "Vector convertido a Q1.14:" << endl;
+void muestra_tabla_C(float tabla[]){
 
     for (int i = 0; i < 91; i++) {
-        cout << tabla_copia[i] << endl;
+        cout <<"Indice ["<<i<<"] = " <<tabla[i] << endl;
+        // printf("Indice [%i] = %.16f\n", i, tabla[i]);
     }
 
     // la misma muestra de assembly solo que ver unicamente los valores cargados
 }
 
-//LINK - Convertir a Q3.12
-int16_t convertirQ3_12(float valor) {
-    float escalado = valor * 4096.0f;
-
-    // Aplicar redondeo: 
-    if (escalado >= 0.0f) {
-        return (int16_t)(escalado + 0.5f);
-    }
-
-    return (int16_t)(escalado - 0.5f);    
-}
-
 //LINK - Identificar cuadrante
 void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int &signo_seno, int &signo_cos){
     int16_t diferencia, Q3_12;
-    // 1. Convertir la entrada decimal a Q3.12.
+    // ! 1. Convertir la entrada decimal a Q3.12.
     Q3_12 = convertirQ3_12(angulo);
 
-    // cout << "\n--- CONVERSION A Q3.12 ---" << endl;
-    // cout << "Angulo ingresado: " << angulo << endl;
-    // cout << "Entero Q3.12: " << Q3_12 << endl;
-    // cout << "Angulo representado: "<< (float)Q3_12 / 4096.0f<<" radianes" << endl;
-
-    // 2. Identificar el cuadrante y calcular la referencia.
+    // ! 2. Identificar el cuadrante y calcular la referencia.
     if (Q3_12 == 0 || Q3_12 == DOSxPI) {
         referencia = 0;
         cuadrante = 0;
         signo_seno = 0;
         signo_cos = 1;
 
-        // cout << "\nCaso especial: 0 o 2xPI" << endl;
-    } else {
+        // ? Caso especial: 0 o 2xPI (360)
+    } 
+    
+    else {
         diferencia = Q3_12 - PI_sobre_2;
 
         if (diferencia < 0) {
@@ -208,14 +207,20 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
             referencia = Q3_12;
             signo_seno = 1;
             signo_cos = 1;
-        } else if (diferencia == 0) {
+
+            // ? Cuadrante 1
+        } 
+        
+        else if (diferencia == 0) {
             cuadrante = 0;
             referencia = PI_sobre_2;
             signo_seno = 1;
             signo_cos = 0;
 
-            // cout << "\nCaso especial: pi/2" << endl;
-        } else {
+            // ? Caso especial: pi/2 (90)
+        } 
+        
+        else {
             diferencia = Q3_12 - PI;
 
             if (diferencia < 0) {
@@ -223,14 +228,20 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
                 referencia = PI - Q3_12;
                 signo_seno = 1;
                 signo_cos = -1;
-            } else if (diferencia == 0) {
+
+                // ? Cuadrante 2
+            } 
+            
+            else if (diferencia == 0) {
                 cuadrante = 0;
                 referencia = 0;
                 signo_seno = 0;
                 signo_cos = -1;
 
-                // cout << "\nCaso especial: pi" << endl;
-            } else {
+                // ? Caso especial: pi (180)
+            } 
+            
+            else {
                 diferencia = Q3_12 - TRESxPI_sobre_2;
 
                 if (diferencia < 0) {
@@ -238,31 +249,30 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
                     referencia = Q3_12 - PI;
                     signo_seno = -1;
                     signo_cos = -1;
-                } else if (diferencia == 0) {
+
+                    // ? Cuadrante 3
+                } 
+                
+                else if (diferencia == 0) {
                     cuadrante = 0;
                     referencia = PI_sobre_2;
                     signo_seno = -1;
                     signo_cos = 0;
 
-                    // cout << "\nCaso especial: 3*pi/2" << endl;
-                } else {
+                    // ? Caso especial: 3*pi/2 (270)
+                } 
+                
+                else {
                     cuadrante = 4;
                     referencia = DOSxPI - Q3_12;
                     signo_seno = -1;
                     signo_cos = 1;
+
+                    // ? Cuadrante 4
                 }
             }
         }
     }
-
-    // 3. Mostrar los resultados.
-    // cout << "\n--- RESULTADOS ---" << endl;
-    // cout << "Cuadrante: " << cuadrante << endl;
-    // cout << "Referencia Q3.12: " << referencia << endl;
-    // cout << "Referencia en radianes: "<< (float)referencia / 4096.0f << endl;
-    // cout << "Signo del seno: " << signo_seno << endl;
-    // cout << "Signo del coseno: " << signo_cos << endl;
-
 
     // ? Sobre el signo:
     // 1: el resultado es positivo.
@@ -270,4 +280,102 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
     // 0: el resultado es exactamente cero en ese caso especial.
 }
 
-#endif /* TABLA_V1_H */
+
+//LINK - Convertir referencia Q3.12 a grados decimales
+float convertir_referencia_a_grados(int16_t referencia_q3_12) {
+
+    double radianes;
+    double grados;
+
+    radianes = (double)referencia_q3_12 / 4096.0;
+    grados = radianes * 180.0 / 3.14159265358979323846;
+
+    return (float)grados;
+}
+
+
+//LINK - Interpolar un valor de seno en formato Q1.14
+int16_t interpolarQ1_14(int16_t tabla[], float grados) {
+
+    // ! Variables temporales para determinar los INDICES de los vecinos
+    int indice_inferior;
+    int indice_superior;
+
+    float fraccion; // ! Variable temporal para guardar la parte decimal del angulo ingresado
+    
+    // ! Variables temporales para determinar los VALORES de los vecinos
+    float valor_inferior; 
+    float valor_superior;
+    
+    float resultado; // ? Resultado final
+
+    // Controlar los limites de la tabla
+    if (grados <= 0) {
+        return (int16_t)tabla[0];
+    }
+
+    if (grados >= 90) {
+        return (int16_t)tabla[90];
+    }
+
+    // Obtener los indices vecinos
+    indice_inferior = (int)grados;
+    indice_superior = indice_inferior + 1;
+
+    // Obtener la parte decimal del angulo
+    fraccion = grados - indice_inferior;
+
+    // Obtener los valores vecinos de la tabla
+    valor_inferior = tabla[indice_inferior];
+    valor_superior = tabla[indice_superior];
+
+    // Calcular la interpolacion lineal
+    resultado = valor_inferior + fraccion * (valor_superior - valor_inferior);
+
+    // Redondear al entero mas cercano
+    return (int16_t)(resultado + 0.5);
+}
+
+//LINK - Calcular seno y coseno finales en Q1.14
+void calcular_seno_coseno_Q1_14(int16_t tabla[], float angulo, int16_t &resultado_seno, int16_t &resultado_coseno){
+    int16_t referencia; // ! Angulo de referencia de la simetria
+    int cuadrante; // ? Variable temporal para determinar el cuandrante seleccionado
+    int signo_seno, signo_cos; // ! Variables para determinar signos (y usado tambien para casos especiales)
+
+    int16_t seno_referencia, coseno_referencia; // ! Valores de refencia 
+
+    float grados_referencia, grados_coseno; // ! Angulos de referencia determinados
+
+    // ! 1. Determinar cuadrante, referencia y signos
+    determinar_cuadrante(angulo,referencia,cuadrante,signo_seno,signo_cos);
+
+    // ! 2. Resolver los casos especiales
+    if (cuadrante == 0) {
+
+        resultado_seno = signo_seno * UNO;
+        resultado_coseno = signo_cos * UNO;
+
+    } 
+    
+    else {
+
+        // ! 3. Convertir la referencia a grados
+        grados_referencia = convertir_referencia_a_grados(referencia);
+
+        // ! 4. Interpolar el seno
+        seno_referencia = interpolarQ1_14(tabla,grados_referencia);
+
+        // ! 5. Obtener el coseno mediante cofuncion
+        grados_coseno = 90.0f - grados_referencia;
+
+        coseno_referencia = interpolarQ1_14(tabla,grados_coseno);
+
+        // ! 6. Aplicar los signos correspondientes
+        resultado_seno = seno_referencia * signo_seno;
+        resultado_coseno = coseno_referencia * signo_cos;
+
+        // ? Dilema para futuro: el -1 capaz deberia estar escalado... (pa pensar noma)
+    }
+}
+
+#endif /* TABLA_H */

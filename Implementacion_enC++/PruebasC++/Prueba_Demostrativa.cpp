@@ -1,4 +1,4 @@
-#include "../Tabla_v2.h"
+#include "../Tabla.h"
 
 int main() {
 

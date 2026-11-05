@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstdint>
-#include "../Tabla_v1.h"
+#include "../Tabla.h"
 
 
 // LINK - Comparar metodos de calculo del indice
@@ -127,7 +127,7 @@ void probarDiferenciaPuntual() {
     const double PI_REAL = 3.14159265358979323846;
 
     float tablaOriginal[Total_valores];
-    float tablaQ14[Total_valores];
+    int16_t tablaQ14[Total_valores];
 
     iniciar_tabla(tablaOriginal);
     copiar_y_convertirQ1_14(tablaQ14, tablaOriginal);
@@ -196,7 +196,7 @@ void probarIndicesConTabla() {
 
     // Tabla original y tabla convertida a Q1.14.
     float tablaOriginal[Total_valores];
-    float tablaQ14[Total_valores];
+    int16_t tablaQ14[Total_valores];
 
     iniciar_tabla(tablaOriginal);
     copiar_y_convertirQ1_14(tablaQ14, tablaOriginal);
@@ -331,7 +331,7 @@ void compararErrorAcumulado() {
     const double PI_REAL = 3.14159265358979323846;
 
     float tablaOriginal[Total_valores];
-    float tablaQ14[Total_valores];
+    int16_t tablaQ14[Total_valores];
 
     iniciar_tabla(tablaOriginal);
     copiar_y_convertirQ1_14(tablaQ14, tablaOriginal);
