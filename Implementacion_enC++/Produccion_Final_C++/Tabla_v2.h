@@ -31,7 +31,7 @@ const int16_t UNO             = 16384;  //NOTE  1 Escalado
 int convertirQ1_14(float valor) {
     float escalado = valor * 16384.0f;
 
-    // Aplicar redondeo:
+    // ? Aplicar redondeo:
     if (escalado >= 0.0f) {             // en caso de que se trate de un positivo
         return (int)(escalado + 0.5f); // redondea 0.5
     }
@@ -43,7 +43,7 @@ int convertirQ1_14(float valor) {
 
 //LINK - Inicializar tabla
 void iniciar_tabla(float tabla[]){
-    // Cada indice representa un seno en especifico
+    // ! Cada indice representa un seno en especifico
     tabla[0] = 0.000000000000000;
     tabla[1] = 0.017452406437284;
     tabla[2] = 0.034899496702501;
@@ -139,8 +139,8 @@ void iniciar_tabla(float tabla[]){
 
 //LINK - Hacer copia y convertir Q1.14
 void copiar_y_convertirQ1_14(int16_t copia[], float tabla_principal[]){
-    // Toma los valores originales en decimal de la tabla
-    // y los convierte a enteros
+    // ! Toma los valores originales en decimal de la tabla
+    // ! y los convierte a enteros escalados
     
     // ? se tendra una segunda tabla que almacene estos valores
     // asi no se modifican los valores originales a futuras pruebas de ser 
@@ -157,7 +157,7 @@ void muestra_tabla_assembly(int16_t tabla_copia[]){
         cout<<"\t.FILL #"<<tabla_copia[i]<<" ; Resultado de seno("<<i<<")"<<endl;
     }
 
-    // Para copiar y pegar para cuando tengamos que armar el assembly
+    // ? Para copiar y pegar para cuando tengamos que armar el assembly
 }
 
 //LINK - Muestra de valores (normal)
@@ -165,6 +165,7 @@ void muestra_tabla_C(float tabla[]){
 
     for (int i = 0; i < 91; i++) {
         cout <<"Indice ["<<i<<"] = " <<tabla[i] << endl;
+        // printf("Indice [%i] = %.16f\n", i, tabla[i]);
     }
 
     // la misma muestra de assembly solo que ver unicamente los valores cargados
@@ -174,7 +175,7 @@ void muestra_tabla_C(float tabla[]){
 int16_t convertirQ3_12(float valor) {
     float escalado = valor * 4096.0f;
 
-    // Aplicar redondeo: 
+    // ? Aplicar redondeo: 
     if (escalado >= 0.0f) {
         return (int16_t)(escalado + 0.5f);
     }
@@ -206,14 +207,20 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
             referencia = Q3_12;
             signo_seno = 1;
             signo_cos = 1;
-        } else if (diferencia == 0) {
+
+            // ? Cuadrante 1
+        } 
+        
+        else if (diferencia == 0) {
             cuadrante = 0;
             referencia = PI_sobre_2;
             signo_seno = 1;
             signo_cos = 0;
 
-            // cout << "\nCaso especial: pi/2" << endl;
-        } else {
+            // ? Caso especial: pi/2 (90)
+        } 
+        
+        else {
             diferencia = Q3_12 - PI;
 
             if (diferencia < 0) {
@@ -221,14 +228,20 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
                 referencia = PI - Q3_12;
                 signo_seno = 1;
                 signo_cos = -1;
-            } else if (diferencia == 0) {
+
+                // ? Cuadrante 2
+            } 
+            
+            else if (diferencia == 0) {
                 cuadrante = 0;
                 referencia = 0;
                 signo_seno = 0;
                 signo_cos = -1;
 
-                // cout << "\nCaso especial: pi" << endl;
-            } else {
+                // ? Caso especial: pi (180)
+            } 
+            
+            else {
                 diferencia = Q3_12 - TRESxPI_sobre_2;
 
                 if (diferencia < 0) {
@@ -236,31 +249,30 @@ void determinar_cuadrante(float angulo, int16_t &referencia, int &cuadrante, int
                     referencia = Q3_12 - PI;
                     signo_seno = -1;
                     signo_cos = -1;
-                } else if (diferencia == 0) {
+
+                    // ? Cuadrante 3
+                } 
+                
+                else if (diferencia == 0) {
                     cuadrante = 0;
                     referencia = PI_sobre_2;
                     signo_seno = -1;
                     signo_cos = 0;
 
-                    // cout << "\nCaso especial: 3*pi/2" << endl;
-                } else {
+                    // ? Caso especial: 3*pi/2 (270)
+                } 
+                
+                else {
                     cuadrante = 4;
                     referencia = DOSxPI - Q3_12;
                     signo_seno = -1;
                     signo_cos = 1;
+
+                    // ? Cuadrante 4
                 }
             }
         }
     }
-
-    // 3. Mostrar los resultados.
-    // cout << "\n--- RESULTADOS ---" << endl;
-    // cout << "Cuadrante: " << cuadrante << endl;
-    // cout << "Referencia Q3.12: " << referencia << endl;
-    // cout << "Referencia en radianes: "<< (float)referencia / 4096.0f << endl;
-    // cout << "Signo del seno: " << signo_seno << endl;
-    // cout << "Signo del coseno: " << signo_cos << endl;
-
 
     // ? Sobre el signo:
     // 1: el resultado es positivo.
@@ -283,15 +295,19 @@ float convertir_referencia_a_grados(int16_t referencia_q3_12) {
 
 
 //LINK - Interpolar un valor de seno en formato Q1.14
-int16_t interpolarQ1_14(int tabla[], float grados) {
+int16_t interpolarQ1_14(int16_t tabla[], float grados) {
 
+    // ! Variables temporales para determinar los INDICES de los vecinos
     int indice_inferior;
     int indice_superior;
 
-    float fraccion;
-    float valor_inferior;
+    float fraccion; // ! Variable temporal para guardar la parte decimal del angulo ingresado
+    
+    // ! Variables temporales para determinar los VALORES de los vecinos
+    float valor_inferior; 
     float valor_superior;
-    float resultado;
+    
+    float resultado; // ? Resultado final
 
     // Controlar los limites de la tabla
     if (grados <= 0) {
@@ -321,22 +337,19 @@ int16_t interpolarQ1_14(int tabla[], float grados) {
 }
 
 //LINK - Calcular seno y coseno finales en Q1.14
-void calcular_seno_coseno_Q1_14(int tabla[], float angulo, int16_t &resultado_seno, int16_t &resultado_coseno){
-    int16_t referencia;
-    int cuadrante;
-    int signo_seno;
-    int signo_cos;
+void calcular_seno_coseno_Q1_14(int16_t tabla[], float angulo, int16_t &resultado_seno, int16_t &resultado_coseno){
+    int16_t referencia; // ! Angulo de referencia de la simetria
+    int cuadrante; // ? Variable temporal para determinar el cuandrante seleccionado
+    int signo_seno, signo_cos; // ! Variables para determinar signos (y usado tambien para casos especiales)
 
-    int16_t seno_referencia;
-    int16_t coseno_referencia;
+    int16_t seno_referencia, coseno_referencia; // ! Valores de refencia 
 
-    float grados_referencia;
-    float grados_coseno;
+    float grados_referencia, grados_coseno; // ! Angulos de referencia determinados
 
-    // 1. Determinar cuadrante, referencia y signos
+    // ! 1. Determinar cuadrante, referencia y signos
     determinar_cuadrante(angulo,referencia,cuadrante,signo_seno,signo_cos);
 
-    // 2. Resolver los casos especiales
+    // ! 2. Resolver los casos especiales
     if (cuadrante == 0) {
 
         resultado_seno = signo_seno * UNO;
@@ -346,18 +359,18 @@ void calcular_seno_coseno_Q1_14(int tabla[], float angulo, int16_t &resultado_se
     
     else {
 
-        // 3. Convertir la referencia a grados
+        // ! 3. Convertir la referencia a grados
         grados_referencia = convertir_referencia_a_grados(referencia);
 
-        // 4. Interpolar el seno
+        // ! 4. Interpolar el seno
         seno_referencia = interpolarQ1_14(tabla,grados_referencia);
 
-        // 5. Obtener el coseno mediante cofuncion
+        // ! 5. Obtener el coseno mediante cofuncion
         grados_coseno = 90.0f - grados_referencia;
 
         coseno_referencia = interpolarQ1_14(tabla,grados_coseno);
 
-        // 6. Aplicar los signos correspondientes
+        // ! 6. Aplicar los signos correspondientes
         resultado_seno = seno_referencia * signo_seno;
         resultado_coseno = coseno_referencia * signo_cos;
 

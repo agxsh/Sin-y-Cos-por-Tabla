@@ -1,15 +1,10 @@
-#include <iostream>
-#include <cmath>
-#include <iomanip>
-#include <cstdint>
-
 #include "../Tabla_v2.h"
 
 int main() {
 
     // Inicializar y convertir las tablas
     float tabla_original[91];
-    int tabla_q1_14[91];
+    int16_t tabla_q1_14[91];
 
     iniciar_tabla(tabla_original);
     copiar_y_convertirQ1_14(tabla_q1_14, tabla_original);

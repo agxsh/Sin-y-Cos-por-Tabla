@@ -1,8 +1,3 @@
-#include <iostream>
-#include <cmath>
-#include <iomanip>
-#include <cstdint>
-
 #include "../Tabla_v2.h"
 
 int main() {
@@ -25,8 +20,7 @@ int main() {
 
         resultado = convertir_referencia_a_grados(referencia);
 
-        esperado = ((double)referencia / 4096.0)
-                   * 180.0 / 3.14159265358979323846;
+        esperado = ((double)referencia / 4096.0) * 180.0 / 3.14159265358979323846;
 
         error = fabs(resultado - esperado);
 
@@ -49,28 +43,20 @@ int main() {
 
     cout << "Referencias evaluadas: 6435\n";
 
-    cout << "Error absoluto maximo: "
-         << error_maximo << " grados\n";
+    cout << "Error absoluto maximo: " << error_maximo << " grados\n";
 
-    cout << "Error absoluto promedio: "
-         << error_acumulado / 6435.0 << " grados\n";
+    cout << "Error absoluto promedio: " << error_acumulado / 6435.0 << " grados\n";
 
-    cout << "Referencia con mayor error: "
-         << referencia_error_maximo << "\n";
+    cout << "Referencia con mayor error: " << referencia_error_maximo << "\n";
 
-    cout << "Errores de monotonicidad: "
-         << errores_monotonicidad << "\n";
+    cout << "Errores de monotonicidad: " << errores_monotonicidad << "\n";
 
     cout << "\n===== CASOS PARTICULARES =====\n";
 
     int casos[7] = {0, 1, 2048, 4096, 5000, 6000, 6434};
 
     for (int i = 0; i < 7; i++) {
-
-        cout << "Referencia Q3.12: " << casos[i]
-             << " -> Grados: "
-             << convertir_referencia_a_grados(casos[i])
-             << "\n";
+        cout << "Referencia Q3.12: " << casos[i] << " -> Grados: " << convertir_referencia_a_grados(casos[i]) << endl;
     }
 
     return 0;

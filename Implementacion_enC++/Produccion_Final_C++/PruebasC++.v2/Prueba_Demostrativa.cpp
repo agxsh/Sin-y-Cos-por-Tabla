@@ -1,9 +1,3 @@
-
-#include <iostream>
-#include <cmath>
-#include <iomanip>
-#include <cstdint>
-
 #include "../Tabla_v2.h"
 
 int main() {
@@ -13,7 +7,7 @@ int main() {
     // ==========================================
 
     float tabla_original[91];
-    int tabla_q1_14[91];
+    int16_t tabla_q1_14[91];
 
     iniciar_tabla(tabla_original);
     copiar_y_convertirQ1_14(tabla_q1_14,tabla_original);
@@ -102,24 +96,26 @@ int main() {
 
     if (cuadrante == 0) {
 
-     cout << "\nTipo de entrada: CASO ESPECIAL\n";
+        cout << "\nTipo de entrada: CASO ESPECIAL\n";
 
-     cout << "No se requiere interpolacion.\n";
+        cout << "No se requiere interpolacion.\n";
 
-     cout << "Los signos representan directamente ";
-     cout << "los valores matematicos del seno y coseno.\n";
+        cout << "Los signos representan directamente ";
+        cout << "los valores matematicos del seno y coseno.\n";
 
-    } else {
+    } 
+    
+    else {
 
-     cout << "\nTipo de entrada: CASO NORMAL\n";
+        cout << "\nTipo de entrada: CASO NORMAL\n";
 
-     grados_referencia = convertir_referencia_a_grados(referencia);
+        grados_referencia = convertir_referencia_a_grados(referencia);
 
-     grados_coseno = 90.0f - grados_referencia;
+        grados_coseno = 90.0f - grados_referencia;
 
-     cout << "Referencia en grados: " << grados_referencia << "\n";
+        cout << "Referencia en grados: " << grados_referencia << "\n";
 
-     cout << "Angulo para el coseno (cofuncion): " << grados_coseno << "\n";
+        cout << "Angulo para el coseno (cofuncion): " << grados_coseno << "\n";
     }
 
     // ==========================================
